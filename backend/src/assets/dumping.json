@@ -1,0 +1,15 @@
+{
+    "data": [{
+        "name": "Baguette",
+        "description": "I am a yeasty boy"
+    },
+    {
+        "name": "sourdough",
+        "description": "I am a sour bread"
+    },
+    {
+        "name": "hotdog bun",
+        "description": "I am a long soft bread made for hotdogs only"
+    }
+]
+}

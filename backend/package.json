@@ -1,0 +1,22 @@
+{
+  "name": "TimIlof",
+  "version": "1.0.0",
+  "description": "A dating app for school",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^8.2.0",
+    "ejs": "^3.0.1",
+    "express": "^4.15.2",
+    "mongodb": "^3.5.4",
+    "socket.io": "^2.3.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
+}
