@@ -31,13 +31,29 @@ async function GetFromDB(collection){
     }
 }
 
+async function removeFromDB(room){
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    try {
+		await client.connect();
+		const db = client.db('dating-base');
+        const deleteDocument = await db.collection("matches").deleteOne({ roomID: room });
+          return deleteDocument;
+
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
+
+
 async function updateInCollection(nameOfDocument, newValue){
     const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
     try {
 		await client.connect();
 		const db = client.db('dating-base');
-        const updatedDoc = await db.collection("matches").updateOne({roomID:`${nameOfDocument}`}, { $set:{lastMessage:`${newValue}`}});
-          return updatedDoc;
+        const updatedDocument = await db.collection("matches").updateOne({roomID:`${nameOfDocument}`}, { $set:{lastMessage:`${newValue}`}});
+          return updatedDocument;
 
     } catch (e) {
         console.error(e);
@@ -63,7 +79,7 @@ async function createNewCollection(nameOfNewCollection){
 }
 
 
-// createNewCollection('match-Ferrari-Janno-5e6fbd3f38f8fc7b1ce48165');
+// createNewCollection('match-eva-Janno-5e6fcac84d32897c9550051d');
 
 
 async function writeDb(data, collection){
@@ -104,8 +120,8 @@ io.on('connection', function(socket){
     });
 
     // delete message handler
-    socket.on('like', function(messageId){
-        io.emit('like', messageId);
+    socket.on('unmatch', function(room){
+        removeFromDB(room);
     });
     
 });

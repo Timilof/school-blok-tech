@@ -2,7 +2,10 @@
 var socket = io();
 
 const backButton = document.querySelector('.back-button');
-const unmatchHeart = document.querySelector('.unmatch-heart');
+const unMatchHeart = document.querySelector('.unmatch-heart');
+const unmatchQuestion = document.querySelector('.unmatch-question');
+const yesUnmatch = document.querySelector('.yea-unmatch');
+const dontUnmatch = document.querySelector('.dont-unmatch');
 const sendButton = document.querySelector('.send');
 const chatArea = document.querySelector('.chat-area');
 const chatWindow = document.querySelector('.chat-container');
@@ -75,9 +78,31 @@ chatLinks.forEach(match =>{
     })
 });
 
-backButton.addEventListener('click', ()=>{
+backButton.addEventListener('click', (e)=>{
+    e.preventDefault();
     chatArea.classList.toggle('down');
 });
+
+
+unMatchHeart.addEventListener('click', (e)=>{
+    e.preventDefault();
+    unmatchQuestion.classList.toggle('hidden');
+})
+yesUnmatch.addEventListener('click', (e)=>{
+    e.preventDefault();
+    chatLinks.forEach(chatLink =>{
+        if(chatLink.dataset.room == roomId){
+            chatLink.remove();
+        }
+    });
+    unmatchQuestion.classList.toggle('hidden');
+    chatArea.classList.toggle('down');
+    socket.emit('unmatch', roomId);
+})
+dontUnmatch.addEventListener('click', (e)=>{
+    e.preventDefault();
+    unmatchQuestion.classList.toggle('hidden');
+})
 
 
 socket.on('open chat', function(data){

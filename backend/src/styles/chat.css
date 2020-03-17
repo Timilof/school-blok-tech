@@ -46,6 +46,7 @@ li{
     background-color: #fd83d8;
     display: flex;
     padding: 10px 0;
+    position: relative;
 }
 
 .chat-title .match-name{
@@ -70,6 +71,38 @@ li{
     font-size: 24px;
     border: none;
     background: transparent;
+}
+
+.unmatch-question div{
+    display: flex;
+    justify-content: space-around;
+}
+
+.unmatch-question div button{
+    letter-spacing: 1px;
+}
+.yea-unmatch{
+    color: #ff84ee;
+}
+
+.unmatch-question{
+    transition: .3s ease-in-out;
+    z-index: 99;
+    position: absolute;
+    right: 5px;
+    top: 53px;
+    max-width: 30vw;
+    font-size: 14px;
+    background-color: rgba(51, 51, 51, .8);
+    color: #fff;
+    padding: 4px 6px;
+    border-radius: 6px;
+}
+
+.hidden{
+    opacity: 0;
+    pointer-events: none;
+    transform: scale(0.5, 0.5)
 }
 
 .test-button{
