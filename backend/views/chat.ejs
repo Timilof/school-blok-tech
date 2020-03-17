@@ -12,7 +12,7 @@
 
     <ul class="match-block-container">
     <% if (matches) { matches.forEach(function(match) { %>
-        <li class="match-block-link" data-room="<%=match.roomID%>">
+        <li class="match-block-link" data-room="<%=match.roomID%>"" data-img="<%=match.herImage%>" data-name="<%=match.name%>">
             <a class="match-block" href="#">
                 <img class="match-image" src="<%=match.herImage%>" alt="<%=match.name%>">
                 <div class="match-block-text">
@@ -27,8 +27,9 @@
     <div class="chat-area down">
         <div class="chat-title">
                 <button class="back-button"> </button>
-                <img class="match-image" src="https://cdn130.picsart.com/274506323021201.jpg?r1024x1024" alt="">
-                <h3 class="match-name">A girls name</h3>
+                <img class="match-image chat-img" src="https://cdn130.picsart.com/274506323021201.jpg?r1024x1024" alt="">
+                <h3 class="match-name chat-name">A girls name</h3>
+                <button class="unmatch-heart">💔</button>
         </div>
         <ul class="chat-container">
             <li class="message"><p>hoi hoi this is a message from your girlfrend</p><span>11:00</span></li>

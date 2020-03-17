@@ -63,6 +63,15 @@ li{
     margin: auto 14px;
 }
 
+.unmatch-heart{
+    margin-left: auto;
+    width: 50px;
+    height: 50px;
+    font-size: 24px;
+    border: none;
+    background: transparent;
+}
+
 .test-button{
     background-color: lime;
     border: none;

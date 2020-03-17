@@ -2,10 +2,14 @@
 var socket = io();
 
 const backButton = document.querySelector('.back-button');
+const unmatchHeart = document.querySelector('.unmatch-heart');
 const sendButton = document.querySelector('.send');
 const chatArea = document.querySelector('.chat-area');
 const chatWindow = document.querySelector('.chat-container');
 const chatLinks = document.querySelectorAll('.match-block-link');
+
+const chatTitle = document.querySelector('.chat-name');
+const chatImage = document.querySelector('.chat-img');
 
 const inputField = document.querySelector('.input');
 
@@ -33,6 +37,14 @@ function buildAMessage(sender, messageContent, timestamp){
     return aMessage;
 }
 
+function updateLastMessages(lastMessage, room){
+    chatLinks.forEach(chatLink =>{
+        if(chatLink.dataset.room == room){
+            chatLink.querySelector('.last-message').textContent = lastMessage;
+        }
+    });
+}
+
 function clearInputfieldAndFocus(){
     document.querySelector('.input').value = "";
     document.querySelector('.input').focus();
@@ -46,13 +58,20 @@ function getCurrentTime(){
     return timestamp
 }
 
+function setImageAndName(img, name){
+    chatTitle.textContent = name;
+    chatImage.src = img;
+}
+
 chatLinks.forEach(match =>{
     match.addEventListener('click', (e)=>{
         e.preventDefault();
         roomId = e.target.dataset.room
+        let matchName = e.target.dataset.name
+        let matchImg = e.target.dataset.img
+        setImageAndName(matchImg, matchName)
         chatArea.classList.toggle('down');
         socket.emit('open chat', roomId); 
-        // TODO: send appropriate chat room id with emit
     })
 });
 
@@ -70,11 +89,11 @@ socket.on('open chat', function(data){
     scrollToEnd();
 });
 
-
 socket.on('chat message', function(data){
     const messageToRender = buildAMessage(data.from, data.msg, data.time);
     chatWindow.insertAdjacentHTML('beforeend', messageToRender);
     scrollToEnd();
+    updateLastMessages(data.msg, data.room);
 });
 
 
@@ -94,21 +113,18 @@ inputField.addEventListener("keydown", function(e) {
 
 
 function sendMessage(){
-
     const message = inputField.value
     if(message.length < 1){
             clearInputfieldAndFocus();
             return
         }
         
-    //   const messageId = Math.floor(Math.random() * 99999999) + 1;
             const timestamp = getCurrentTime();
             socket.emit('chat message', {
                 sender: userName,
                 msg: message,
                 time: timestamp,
                 room: roomId
-                // msgId: messageId
               });
             clearInputfieldAndFocus();
 }

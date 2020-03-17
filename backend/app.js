@@ -18,17 +18,26 @@ const uri = process.env.DB_NAME
 let chatData;
 
 async function GetFromDB(collection){
-
     const client = new mongo.MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
-
     try {
 		await client.connect();
-
 		const db = client.db('dating-base');
-
 		const data = await db.collection(`${collection}`).find({}).toArray();
         return data
+    } catch (e) {
+        console.error(e);
+    } finally {
+        await client.close();
+    }
+}
 
+async function updateInCollection(nameOfDocument, newValue){
+    const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
+    try {
+		await client.connect();
+		const db = client.db('dating-base');
+        const updatedDoc = await db.collection("matches").updateOne({roomID:`${nameOfDocument}`}, { $set:{lastMessage:`${newValue}`}});
+          return updatedDoc;
 
     } catch (e) {
         console.error(e);
@@ -43,9 +52,7 @@ async function createNewCollection(nameOfNewCollection){
 
     try {
 		await client.connect();
-
 		const db = client.db('dating-base');
-
 		const newCollection = await db.createCollection(`${nameOfNewCollection}`);
           
     } catch (e) {
@@ -64,15 +71,12 @@ async function writeDb(data, collection){
 
     try {
 		await client.connect();
-
 		const db = client.db('dating-base');
-
 		const fullDump = await db.collection(`${collection}`).insertOne({
             from:data.sender,
             msg:data.msg,
             time:data.time
             })
-        // console.log(fullDump.ops);
         return fullDump   
           
     } catch (e) {
@@ -95,7 +99,8 @@ io.on('connection', function(socket){
     // normal message handler
     socket.on('chat message', function(data){
         writeDb(data, data.room);
-        io.emit('chat message', {from: data.sender, msg:data.msg, time:data.time});
+        updateInCollection(data.room, data.msg);
+        io.emit('chat message', {from: data.sender, msg:data.msg, time:data.time, room:data.room});
     });
 
     // delete message handler
