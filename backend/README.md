@@ -24,4 +24,12 @@ to run my application on your local machine you'll need to do the following:
 The chat is currently built to simulate how it woud work in a fully functioning app, to do this I feigned the steps which would happen prior to making chatting possible. The steps I feigned are matching and logging in.  
 
 In the app you will see a list of chats you can interact with and send messages in, in my chat feature you are logged in as Janno and are can tlk to the girls you/Janno has matched with. To simulate a responce there is a semi-hidden chat to feign the situation where youare logged in as a fictive user "Charlie", Charlie has a match with Janno and this way you can send responses back.  
-I think it's nicer to actually use it than read about it so please do run the project.
+I think it's nicer to actually use it than read about it so please do run the project.  
+
+
+#### info
+For more information please check out my wiki  
+
+---
+
+license Mit 
