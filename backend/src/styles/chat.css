@@ -219,6 +219,7 @@ li{
     display: flex;
     flex-direction: column;
     transition: .3s ease-in-out;
+    z-index: 99;
 }
 
 input{
