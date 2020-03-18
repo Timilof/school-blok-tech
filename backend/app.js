@@ -79,7 +79,7 @@ async function createNewCollection(nameOfNewCollection){
 }
 
 
-// createNewCollection('match-eva-Janno-5e6fcac84d32897c9550051d');
+// createNewCollection('match-Claudia-Janno-5e6fcac84d32897c95566666');
 
 
 async function writeDb(data, collection){
@@ -109,30 +109,53 @@ io.on('connection', function(socket){
 
     socket.on('open chat', async function(roomID){
         chatData = await GetFromDB(roomID);
-        socket.emit('open chat', chatData);
+        socket.join(roomID);
+        io.to(roomID).emit('open chat', chatData);
+        // socket.emit('open chat', chatData);
     })
+
+    // creates a new collection and writes the text message in it
+    socket.on('make new chat', async function(data){
+        chatData = await createNewCollection(data.room);
+        writeDb(data, data.room);
+        updateInCollection(data.room, data.msg);
+        // io.emit('chat message', {from: data.sender, msg:data.msg, time:data.time, room:data.room});
+        io.to(data.room).emit('chat message', {from: data.sender, msg:data.msg, time:data.time, room:data.room});
+    });
 
     // normal message handler
     socket.on('chat message', function(data){
         writeDb(data, data.room);
         updateInCollection(data.room, data.msg);
-        io.emit('chat message', {from: data.sender, msg:data.msg, time:data.time, room:data.room});
+        // io.emit('chat message', {from: data.sender, msg:data.msg, time:data.time, room:data.room});
+        io.to(data.room).emit('chat message', {from: data.sender, msg:data.msg, time:data.time, room:data.room});
     });
 
     // delete message handler
+    socket.on('leave room', function(room){
+        socket.leave(room);
+    });
+    
     socket.on('unmatch', function(room){
+        socket.leave(room);
         removeFromDB(room);
     });
     
 });
 
 app.set('view engine', 'ejs');
-app.get('/', function(req, res) {
-    res.sendFile(__dirname + '/views/index.html');
-  });
-  app.get('/chat', async (req, res, next) => {
+  app.get('/', async (req, res, next) => {
+      const newMatches =[];
+      const oldMatches = [];
     const matches = await GetFromDB('matches');
-    res.render('chat.ejs', {matches: matches})
+    matches.forEach(match =>{
+        if(match.lastMessage == ""){
+            newMatches.push(match);
+        }else{
+            oldMatches.push(match);
+        }
+    })
+    res.render('chat.ejs', {oldMatches: oldMatches, newMatches: newMatches})
 });
 
 

@@ -9,10 +9,24 @@
 </head>
 <body>
     <h1>Chat with matches</h1>
-
+    <% if (newMatches.length > 0) { %>
+        <h2>New matches <span class="number-of-matches"><%=newMatches.length%></span></h2>
+    
+        <ul class="new-match-container">
+    <% if (newMatches) { newMatches.forEach(function(match) { %>
+            <li class="new-match-container-item" data-room="<%=match.roomID%>" data-img="<%=match.herImage%>" data-name="<%=match.name%>">
+                <a href="#">
+                    <img class="new-match-image" src="<%=match.herImage%>" alt="<%=match.name%>">
+                    <p><%=match.name%></p>
+                </a>
+            </li>
+    <% })} %>
+        </ul>
+        <% } %>
+    <h2>Messages</h2>
     <ul class="match-block-container">
-    <% if (matches) { matches.forEach(function(match) { %>
-        <li class="match-block-link" data-room="<%=match.roomID%>"" data-img="<%=match.herImage%>" data-name="<%=match.name%>">
+    <% if (oldMatches) { oldMatches.forEach(function(match) { %>
+        <li class="match-block-link" data-room="<%=match.roomID%>" data-img="<%=match.herImage%>" data-name="<%=match.name%>">
             <a class="match-block" href="#">
                 <img class="match-image" src="<%=match.herImage%>" alt="<%=match.name%>">
                 <div class="match-block-text">
@@ -39,14 +53,25 @@
                 </div>
         </div>
         <ul class="chat-container">
-            <li class="message"><p>hoi hoi this is a message from your girlfrend</p><span>11:00</span></li>
-            <li class="message my-message"><p>hey hey this is a message from yourself</p><span>11:00</span></li>
+            <li class="prompt"><p>Send a message and she might actually reply</p></li>
         </ul>
+
+        
         <div class="input-container">
-            <input class="input" type="text">
+            <input class="input" type="text" placeholder="send a message">
             <button class="send">send</button>
         </div>
     </div>
+    <p class="unmatch-popup hidden">you have unmatched <span class="unmatched-person">Baby</span></p>
+        <div class="janno-block" data-room="match-charlie-Janno-5e6fbd3f38f8fc7b1ce48165" data-img="https://avatars1.githubusercontent.com/u/11157347?s=460&v=4" data-name="Janno">
+            <a class="match-block" href="#">
+                <img class="match-image" src="https://avatars1.githubusercontent.com/u/11157347?s=460&v=4" alt="Janno">
+                <div class="match-block-text">
+                    <h3 class="match-name">Janno</h3>
+                    <p class="last-message">This chat is for demo purposes only! hardcoded stuff... it's really just so we can chat with Janno from charlies perspective</p>
+                </div>
+                </a>
+        </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/scripts/client-socket.js"></script>
 </body>
