@@ -1,6 +1,14 @@
 (function() {
   var socket = io();
 
+  const profile = document.querySelector(".switch-button");
+  const profileButton = document.querySelector(".switch-link");
+  const usernameField = document.querySelector(".username");
+  const profilesPopup = document.querySelector(".popup-profiles");
+  const profileImg = document.querySelector(".switch-link img");
+  
+  const containersForallMatches = document.querySelectorAll(".all-matches-container");
+  
   const backButton = document.querySelector(".back-button");
   const unMatchHeart = document.querySelector(".unmatch-heart");
   const unmatchQuestion = document.querySelector(".unmatch-question");
@@ -15,41 +23,20 @@
   const newmachtChatLinks = document.querySelectorAll(
     ".new-match-container-item"
   );
-  const jannoBlock = document.querySelector(".janno-block");
 
   const chatTitle = document.querySelector(".chat-name");
   const chatImage = document.querySelector(".chat-img");
 
   const inputField = document.querySelector(".input");
 
+  let isUserABoy = true;
   let userName = "Janno";
   let roomId;
   let talkingTo;
   let isNewMatch = false;
 
-  // {
-  //     "name":"saskia",
-  //     "roomID":"mattch",
-  //     "herImage":"hhh",
-  //     "hisImage":"",
-  //     "lastMessage":""
-  //     }
-  // {
-  //     "name":"Charlie",
-  //     "roomID":"match-charlie-Janno-5e6fbd3f38f8fc7b1ce48165",
-  //     "herImage":"https://i.redd.it/i3qlw1aid7g21.jpg",
-  //     "hisImage":"https://avatars1.githubusercontent.com/u/11157347?s=460&v=4",
-  //     "lastMessage":"chachacha",
-  //      "hisName":"Janno"
-  //     }
-  // {
-  //     "name":"Claudia",
-  //     "roomID":"match-Claudia-Janno-5e6fcac84d32897c95566666",
-  //     "herImage":"https://thumbor.pijper.io/RaHRNIppbLZxvOdCjNmSIdeUNBc=/1290x726/center/middle/https://cdn.pijper.io/2019/12/w5m5CsnDylIwC71576744636.jpeg",
-  //     "hisName":"Janno",
-  //     "hisImage":"https://avatars1.githubusercontent.com/u/11157347?s=460&v=4",
-  //     "lastMessage":""
-  //     }
+
+  
 
   function scrollToEnd() {
     chatWindow.scrollTop = chatWindow.scrollHeight;
@@ -103,9 +90,6 @@
       talkingTo = e.target.dataset.name;
       setImageAndName(matchImg, matchName);
       chatArea.classList.toggle("down");
-      if (talkingTo == "Janno") {
-        userName = "Charlie";
-      }
       if (newMatch) {
         isNewMatch = true;
         renderMessagePrompt();
@@ -122,7 +106,6 @@
   chatLinks.forEach(chat => {
     addChatListeners(chat, false);
   });
-  addChatListeners(jannoBlock);
 
   backButton.addEventListener("click", e => {
     e.preventDefault();
@@ -137,6 +120,33 @@
     e.preventDefault();
     unmatchQuestion.classList.toggle("hidden");
   });
+
+  profileButton.addEventListener("click", e =>{
+    e.preventDefault();
+    profilesPopup.classList.toggle('hidden');
+  })
+  
+  function swapChatLists(){
+    profilesPopup.classList.toggle('hidden');
+    containersForallMatches.forEach(container =>{
+        container.classList.toggle('slide');
+    })
+  }
+
+  function swapUser(){
+    if(isUserABoy){
+      isUserABoy = false;
+      userName = "Charlie";
+      profileImg.src = 'https://i.redd.it/i3qlw1aid7g21.jpg';
+      socket.emit("swap user", userName);
+    }else{
+      isUserABoy = true;
+      userName = "Janno";
+      profileImg.src = 'https://avatars1.githubusercontent.com/u/11157347?s=460&v=4';
+      socket.emit("swap user", userName);
+    }
+   swapChatLists(); 
+  }
 
   yesUnmatch.addEventListener("click", e => {
     e.preventDefault();
@@ -220,4 +230,17 @@
     }
     clearInputfieldAndFocus();
   }
+
+  window.onload =  function(){
+    if(profileButton.dataset.user == "Janno"){
+      usernameField.value = "Charlie"
+      profile.textContent = "Charlie"
+    }else{
+      swapUser();
+      usernameField.value = "Janno"
+      profile.textContent = "Janno"
+    }
+    usernameField.innerHTML = "idot";
+  }
+
 })();

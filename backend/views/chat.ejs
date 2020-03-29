@@ -8,7 +8,28 @@
     <title>Chat</title>
   </head>
   <body>
-    <h1>Chat with matches</h1>
+    <div class="heading">
+        <h1>Chat with matches</h1>
+        <% if (user) { %>
+
+          <a href="#" class="switch-link" data-user="<%=user%>">
+            <img
+              class="match-image profile-link"
+              src="https://avatars1.githubusercontent.com/u/11157347?s=460&v=4"
+              alt="<%=user%>"
+            />
+          </a>
+      <% } %>
+          <!-- <form class="popup-profiles hidden" action="/" method="post">
+            <input type="text" value="Charlie" id="username">
+          <button type="submit" class="switch-button">Charlie</button>
+        </form> -->
+        <form action="/" method="post" class="popup-profiles hidden">
+          <input id="username" class="hidden displaynone username" type="text" value="x" name="username" autocomplete="off" required="required" />
+          <button type="submit" class="switch-button">Charlie</button>
+        </form>
+    </div>
+    <div class="all-matches-container">
     <% if (newMatches.length > 0) { %>
     <h2>
       New matches <span class="number-of-matches"><%=newMatches.length%></span>
@@ -57,6 +78,31 @@
       </li>
       <% })} %>
     </ul>
+  </div>
+
+  <div class="all-matches-container slide">
+      <h2>Messages</h2>
+    <ul class="janno-block-container">
+        <li
+        class="match-block-link"
+        data-room="match-charlie-Janno-5e6fbd3f38f8fc7b1ce48165"
+        data-img="https://avatars1.githubusercontent.com/u/11157347?s=460&v=4"
+        data-name="Janno"
+      >
+      <a class="match-block" href="#">
+        <img
+          class="match-image"
+          src="https://avatars1.githubusercontent.com/u/11157347?s=460&v=4"
+          alt="Janno"
+        />
+        <div class="match-block-text">
+          <h3 class="match-name">Janno</h3>
+          <p class="last-message">hey ik ben charlie</p>
+        </div>
+      </a>
+    </li>
+  </ul>
+  </div>
 
     <div class="chat-area down">
       <div class="chat-title">
@@ -90,27 +136,6 @@
     <p class="unmatch-popup hidden">
       you have unmatched <span class="unmatched-person">Baby</span>
     </p>
-    <div
-      class="janno-block"
-      data-room="match-charlie-Janno-5e6fbd3f38f8fc7b1ce48165"
-      data-img="https://avatars1.githubusercontent.com/u/11157347?s=460&v=4"
-      data-name="Janno"
-    >
-      <a class="match-block" href="#">
-        <img
-          class="match-image"
-          src="https://avatars1.githubusercontent.com/u/11157347?s=460&v=4"
-          alt="Janno"
-        />
-        <div class="match-block-text">
-          <h3 class="match-name">Janno</h3>
-          <p class="last-message">
-            This chat is for demo purposes only! hardcoded stuff... it's really
-            just so we can chat with Janno from charlies perspective
-          </p>
-        </div>
-      </a>
-    </div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/scripts/client-socket.js"></script>
   </body>

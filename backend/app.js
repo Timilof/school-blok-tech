@@ -1,20 +1,34 @@
 const express = require("express");
 const dotenv = require("dotenv").config();
+const session = require('express-session')
+const bodyParser = require('body-parser')
 const mongo = require("mongodb");
 
 const app = express()
   .use(express.static(__dirname + "/src"))
-  .set("views", "views");
+  .set("views", "views")
+  .use(session({
+    resave: true,
+    saveUninitialized: true,
+    secret: process.env.SESSION_SECRET,
+    cookie: {maxAge: 60000}
+  }))
+  .use(bodyParser.urlencoded({ extended: false }))
+  .use(bodyParser.json());
+
+  // app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}))
+
 
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 3500;
 
 const { MongoClient } = require("mongodb");
 
 const uri = process.env.DB_NAME;
 
 let chatData;
+let reqObject;
 
 async function GetFromDB(collection) {
   const client = new mongo.MongoClient(uri, {
@@ -125,7 +139,6 @@ io.on("connection", function(socket) {
     chatData = await GetFromDB(roomID);
     socket.join(roomID);
     io.to(roomID).emit("open chat", chatData);
-    // socket.emit('open chat', chatData);
   });
 
   // creates a new collection and writes the text message in it
@@ -133,7 +146,6 @@ io.on("connection", function(socket) {
     chatData = await createNewCollection(data.room);
     writeDb(data, data.room);
     updateInCollection(data.room, data.msg);
-    // io.emit('chat message', {from: data.sender, msg:data.msg, time:data.time, room:data.room});
     io.to(data.room).emit("chat message", {
       from: data.sender,
       msg: data.msg,
@@ -146,7 +158,6 @@ io.on("connection", function(socket) {
   socket.on("chat message", function(data) {
     writeDb(data, data.room);
     updateInCollection(data.room, data.msg);
-    // io.emit('chat message', {from: data.sender, msg:data.msg, time:data.time, room:data.room});
     io.to(data.room).emit("chat message", {
       from: data.sender,
       msg: data.msg,
@@ -168,6 +179,13 @@ io.on("connection", function(socket) {
 
 app.set("view engine", "ejs");
 app.get("/", async (req, res, next) => {
+
+  if(req.session.user) {
+    console.log("new sesh ",req.session.user)
+  }else{
+    req.session.user = 'Janno';
+    console.log("already ",req.session.user)
+  }
   const newMatches = [];
   const oldMatches = [];
   const matches = await GetFromDB("matches");
@@ -178,7 +196,23 @@ app.get("/", async (req, res, next) => {
       oldMatches.push(match);
     }
   });
-  res.render("chat.ejs", { oldMatches: oldMatches, newMatches: newMatches });
+  res.render("chat.ejs", { oldMatches: oldMatches, newMatches: newMatches, user: req.session.user });
+});
+  
+  app.post('/', async function(req, res) {
+    var username = req.body.username;
+      req.session.user = username;
+    const newMatches = [];
+    const oldMatches = [];
+    const matches = await GetFromDB("matches");
+    matches.forEach(match => {
+      if (match.lastMessage == "") {
+        newMatches.push(match);
+      } else {
+        oldMatches.push(match);
+      }
+    });
+    res.render("chat.ejs", { oldMatches: oldMatches, newMatches: newMatches, user: req.session.user });
 });
 
 http.listen(process.env.PORT || port, () =>

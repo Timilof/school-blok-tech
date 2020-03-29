@@ -13,10 +13,11 @@ body{
 }
 
 h1{
-    background-color: #fa1a63;
+    background-color: #fa1793;
     font-size: 24px;
     color: #fff;
-    padding: 5px 0 5px 10px;
+    padding: 0;
+    margin: 10px;
     font-weight: 400;
 }
 
@@ -57,10 +58,6 @@ li{
     list-style-type: none;
 }
 
-/* .match-block-link:nth{
-
-} */
-
 .chat-title{
     background-color: #fd83d8;
     display: flex;
@@ -92,16 +89,13 @@ li{
     right: 0;
     top: 40vh;
     max-width: 150px;
-    background-color: #fa1963;
+    background-color: #fa1893;
     transition: .3s ease-in-out;
     color: #eee;
     padding: 20px;
     border-radius: 12px;
 }
 
-.janno-block{
-    opacity: .1;
-}
 
 .unmatched-person{
     color: #ff93b6;
@@ -145,6 +139,15 @@ li{
     border-radius: 6px;
 }
 
+.heading{
+    background-color: #fa1693;
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+}
+
+
+
 .hidden{
     opacity: 0;
     pointer-events: none;
@@ -165,7 +168,7 @@ li{
     cursor: pointer;
 }
 .number-of-matches{
-    background-color: #fa1b63;
+    background-color: #fa1793;
     padding: 1px 6px;
     border-radius: 3px;
     color: #fff;
@@ -197,6 +200,27 @@ li{
     max-width: 60px;
     height: 100%;
     object-fit: cover;
+}
+
+.all-matches-container{
+    position: absolute;
+    top: 60px;
+    left: 0;
+    transition: .3s ease-in-out;
+    width: 100vw;
+}
+
+.slide{
+   transform: translateX(-100vw);
+}
+
+.all-matches-container + .slide{
+    transform: translateX(100vw);
+}
+
+.janno-block-container,
+.match-block-container{
+    padding: 0;
 }
 
 .match-block-container li:nth-child(even) a{
@@ -276,15 +300,73 @@ input{
     margin-left: auto;
 }
 .my-message{
-    background-color: #fa1d63;
+    background-color: #fa1793;
     margin-left: auto;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 8px;
 }
 
-.match-block-text h3{
+.match-name{
     color: #464646;
 }
+
+
+.janno-block{
+    background-color: #fa1893;
+    border-radius: 12px;
+    position: absolute;
+    bottom: 10px;
+    width: 94%;
+    left: 10px;
+}
+
+.janno-name{
+    color: #fff;
+}
+
+.switch-link{
+    margin: 8px 10px 0 auto;
+}
+
+.switch-button{
+    border: none;
+    background: #fff;
+    width: 100%;
+    height: 50px;
+    color: #000;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.switch-button:first-of-type{
+    border-bottom: 1px solid #fd83d8
+}
+
+.profile-link{
+    width: 40px;
+    height: 40px;
+}
+
+.displaynone{
+    display: none;
+}
+
+.popup-profiles{
+    position: absolute;
+    right: 4px;
+    top: 57px;
+    border: 1px solid #fd83d8;
+    display: flex;
+    flex-direction: column;
+    z-index: 999;
+    border-radius: 8px;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    overflow: hidden;
+    transition: .1s ease-in-out;
+    width: 70px;
+}
+
 .match-block-text p{
     color: rgba(0, 0, 0, .6);
 }
