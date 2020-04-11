@@ -11,13 +11,10 @@ const app = express()
     resave: true,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET,
-    cookie: {maxAge: 60000}
+    cookie: {maxAge: 3600000}
   }))
   .use(bodyParser.urlencoded({ extended: false }))
   .use(bodyParser.json());
-
-  // app.use(session({ secret: 'keyboard cat', cookie: { maxAge: 60000 }}))
-
 
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
@@ -28,9 +25,22 @@ const { MongoClient } = require("mongodb");
 const uri = process.env.DB_NAME;
 
 let chatData;
-let reqObject;
 
-async function GetFromDB(collection) {
+function checkWhoIsWho(matchdata, name){
+  const who = {};
+  if(name == matchdata[0].hisName){
+    who.img = matchdata[0].herImage;
+    who.name = matchdata[0].name
+    who.id = matchdata[0].roomID
+  }else{
+    who.img = matchdata[0].hisImage;
+    who.name = matchdata[0].hisName
+    who.id = matchdata[0].roomID
+  }
+  return who;
+}
+
+async function GetFromDB(collection, explicit) {
   const client = new mongo.MongoClient(uri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -38,10 +48,18 @@ async function GetFromDB(collection) {
   try {
     await client.connect();
     const db = client.db("dating-base");
-    const data = await db
+    let data;
+    if (explicit){
+       data = await db
       .collection(`${collection}`)
-      .find({})
+      .find({ roomID: explicit })
       .toArray();
+    }else{
+       data = await db
+        .collection(`${collection}`)
+        .find({})
+        .toArray();
+    }
     return data;
   } catch (e) {
     console.error(e);
@@ -133,7 +151,6 @@ async function writeDb(data, collection) {
 }
 
 io.on("connection", function(socket) {
-  // TODO: add a create-collection event
 
   socket.on("open chat", async function(roomID) {
     chatData = await GetFromDB(roomID);
@@ -180,40 +197,63 @@ io.on("connection", function(socket) {
 app.set("view engine", "ejs");
 app.get("/", async (req, res, next) => {
 
-  if(req.session.user) {
-    console.log("new sesh ",req.session.user)
-  }else{
+  if(!req.session.user) {
     req.session.user = 'Janno';
-    console.log("already ",req.session.user)
   }
-  const newMatches = [];
-  const oldMatches = [];
+  
   const matches = await GetFromDB("matches");
-  matches.forEach(match => {
-    if (match.lastMessage == "") {
-      newMatches.push(match);
-    } else {
-      oldMatches.push(match);
-    }
-  });
+  const newMatches = matches.filter(match => match.lastMessage == "");
+  const oldMatches = matches.filter(match => match.lastMessage !== "");
   res.render("chat.ejs", { oldMatches: oldMatches, newMatches: newMatches, user: req.session.user });
 });
+
+  app.get('/chat/:match', async function(req,res){
+    chatData = await GetFromDB(req.params.match);
+    matchData = await GetFromDB("matches", req.params.match);
+    const partnerData = checkWhoIsWho(matchData, req.session.user);
+    res.render("chat-detail.ejs", {messages: chatData, user:req.session.user, partner: partnerData} );
+  })
   
-  app.post('/', async function(req, res) {
-    var username = req.body.username;
-      req.session.user = username;
-    const newMatches = [];
-    const oldMatches = [];
-    const matches = await GetFromDB("matches");
-    matches.forEach(match => {
-      if (match.lastMessage == "") {
-        newMatches.push(match);
-      } else {
-        oldMatches.push(match);
+  app.get('/unmatch/:id', async function(req,res){
+    await removeFromDB(room)
+    .then(async () => {
+      if(!req.session.user) {
+        req.session.user = 'Janno';
       }
-    });
+      const matches = await GetFromDB("matches");
+      const newMatches = matches.filter(match => match.lastMessage == "");
+      const oldMatches = matches.filter(match => match.lastMessage !== "");
+      res.render("chat.ejs", { oldMatches: oldMatches, newMatches: newMatches, user: req.session.user });
+    })
+  })
+  
+  app.post('/chat/:match', async function(req,res){
+    const messageData = {
+      sender: req.session.user,
+      msg: req.body.messageInput,
+      time: new Date().getHours() + ":" + new Date().getMinutes(),
+      room: req.params.match
+    }  
+    await updateInCollection(messageData.room, messageData.msg)
+    await writeDb(messageData, req.params.match)
+    .then(async () => {
+    const chatData = await GetFromDB(req.params.match);
+    const matchData = await GetFromDB("matches", req.params.match);
+    const partnerData = checkWhoIsWho(matchData, req.session.user);
+    res.render("chat-detail.ejs", {messages: chatData, user:req.session.user, partner: partnerData} );
+  }, err => {
+    console.error(err); 
+  });
+  });
+
+  app.post('/', async function(req, res) {
+    const username = req.body.username;
+    req.session.user = username;
+    const matches = await GetFromDB("matches");
+    const newMatches = matches.filter(match => match.lastMessage == "");
+    const oldMatches = matches.filter(match => match.lastMessage !== "");
     res.render("chat.ejs", { oldMatches: oldMatches, newMatches: newMatches, user: req.session.user });
-});
+  });
 
 http.listen(process.env.PORT || port, () =>
   console.log(`Dating app on ${port}!`)

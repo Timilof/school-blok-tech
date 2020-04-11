@@ -20,6 +20,7 @@
   const chatArea = document.querySelector(".chat-area");
   const chatWindow = document.querySelector(".chat-container");
   const chatLinks = document.querySelectorAll(".match-block-link");
+  const matchBlock = document.querySelectorAll(".match-block");
   const newmachtChatLinks = document.querySelectorAll(
     ".new-match-container-item"
   );
@@ -36,7 +37,9 @@
   let isNewMatch = false;
 
 
-  
+  matchBlock.forEach(link =>{
+    link.style.pointerEvents = "none";
+  })
 
   function scrollToEnd() {
     chatWindow.scrollTop = chatWindow.scrollHeight;

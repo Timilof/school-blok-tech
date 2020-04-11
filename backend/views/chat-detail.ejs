@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="/styles/chat.css" />
+    <title>Chatting</title>
+  </head>
+  <body>
+    <div class="chat-area">
+      <div class="chat-title">
+        <a href="/" class="back-button"></a>
+      <% if (partner) { %>
+        <img
+          class="match-image chat-img"
+          src="<%=partner.img%>"
+          alt=""
+        />
+        <h3 class="match-name chat-name"><%=partner.name%></h3>
+        <a href="/unmatch/<%=partner.id%>" class="unmatch-heart smaller">unmatch <%=partner.name%></a>
+        <% } %>
+      </div>
+      <ul class="chat-container">
+
+          <% if (user) { %>
+              <% if (messages) { messages.forEach(function(message) { %>
+                <% if (message.from !== user) { %>
+                  <li class="message ">
+                <% } %>
+                <% if (message.from == user) { %>
+                  <li class="message my-message">
+                <% } %>
+                  <p><%=message.msg%></p>
+                  <span><%=message.time%></span></li>
+              <% })} %>
+            </ul>
+            <% } %>
+
+        
+        <% if (1 > messages.length) { %>
+          <li class="prompt">
+            <p>Send a message and she might actually reply</p>
+          </li>
+        <% } %>
+      </ul>
+    <% if (partner) { %>
+      <form action="/chat/<%=partner.id%>" method="post" class="input-container">
+        <input id="messageInput" class="input messageInput" placeholder="send a message" type="text" value="" name="messageInput" autocomplete="off" required="required" />
+        <button type="submit" class="send">send</button>
+      </form>
+    <% } %>
+    </div>
+
+
+  </body>
+</html>

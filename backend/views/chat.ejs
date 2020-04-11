@@ -20,12 +20,8 @@
             />
           </a>
       <% } %>
-          <!-- <form class="popup-profiles hidden" action="/" method="post">
-            <input type="text" value="Charlie" id="username">
-          <button type="submit" class="switch-button">Charlie</button>
-        </form> -->
         <form action="/" method="post" class="popup-profiles hidden">
-          <input id="username" class="hidden displaynone username" type="text" value="x" name="username" autocomplete="off" required="required" />
+          <input id="username" class="hidden displaynone username" type="text" value="" name="username" autocomplete="off" required="required" />
           <button type="submit" class="switch-button">Charlie</button>
         </form>
     </div>
@@ -43,7 +39,7 @@
         data-img="<%=match.herImage%>"
         data-name="<%=match.name%>"
       >
-        <a href="#">
+        <a href="chat/<%=match.roomID%>">
           <img
             class="new-match-image"
             src="<%=match.herImage%>"
@@ -64,7 +60,7 @@
         data-img="<%=match.herImage%>"
         data-name="<%=match.name%>"
       >
-        <a class="match-block" href="#">
+        <a class="match-block" href="/chat/<%=match.roomID%>">
           <img
             class="match-image"
             src="<%=match.herImage%>"
