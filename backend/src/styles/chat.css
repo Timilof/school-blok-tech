@@ -120,9 +120,11 @@ li{
     align-self: flex-end;
 }
 
+@supports (display: flex) {
 .unmatch-question div{
-    display: flex;
-    justify-content: space-around;
+        display: flex;
+        justify-content: space-around;
+    }
 }
 
 .unmatch-question div button{
@@ -150,12 +152,17 @@ li{
 }
 
 .heading{
+    display: block;
     background-color: #fa1693;
-    display: flex;
-    flex-direction: row;
     align-self: center;
 }
 
+@supports (display: flex) {
+    .heading{
+        display: flex;
+        flex-direction: row;
+    }
+  }
 
 
 .hidden{
@@ -168,14 +175,21 @@ li{
     background-color: #ffb2f5
 }
 .match-block{
-    display: flex;
-    align-items: flex-start;
+    display: inline;
     color: #000;
     text-decoration: none;
     /* background-color: #feb1f554; */
     padding: 10px;
     cursor: pointer;
 }
+
+@supports (display: flex) {
+    .match-block{
+        display: flex;
+        align-items: flex-start;
+    }
+  }
+
 .number-of-matches{
     background-color: #fa1793;
     padding: 1px 6px;
@@ -185,11 +199,18 @@ li{
 
 .new-match-container{
     padding: 10px;
-    display: flex;
-    flex-direction: row;
+    display: inline;
     max-width: 100vw;
     overflow-x: scroll;
 }
+
+@supports (display: flex) {
+.new-match-container{
+        display: flex;
+        flex-direction: row;
+    }
+  }
+
 .new-match-container-item{
     text-align: center;
     margin: 0 8px;
@@ -237,10 +258,16 @@ li{
 }
 
 .input-container{
-    display: flex;
+    display: inline;
     justify-content: space-evenly;
     margin-top: auto;
     padding: 6px 0;
+}
+
+@supports (display: flex) {
+    .input-container{
+        display: flex;
+    }
 }
 
 .chat-area{
@@ -253,6 +280,13 @@ li{
     flex-direction: column;
     transition: .3s ease-in-out;
     z-index: 99;
+}
+
+@supports (display: flex) {
+    .chat-area {
+    display: flex;
+    flex-direction: column;
+ }   
 }
 
 input{
@@ -282,14 +316,23 @@ input{
     padding: 6px;
     font-size: 15px;
     max-width: 78%;
-    display: flex;
-    flex-direction: column;
     width: fit-content;
 }
-.chat-container{
-    display: flex;
-    list-style-type: none;
+
+@supports (display: flex) {
+    .message{
+        display: flex;
     flex-direction: column;
+    }
+    .chat-container{
+        display: flex;
+        list-style-type: none;
+        flex-direction: column;
+    }
+}
+
+.chat-container{
+    list-style-type: none;
     padding: 0;
     max-height: 80vh;
     overflow-y: scroll;
@@ -365,8 +408,6 @@ input{
     right: 4px;
     top: 57px;
     border: 1px solid #fd83d8;
-    display: flex;
-    flex-direction: column;
     z-index: 999;
     border-radius: 8px;
     border-top-left-radius: 0;
@@ -376,12 +417,21 @@ input{
     width: 70px;
 }
 
+@supports (display: flex) {
+    .popup-profiles{
+        display: flex;
+        flex-direction: column;
+    }
+    .match-block-text{
+        display: flex;
+        flex-direction: column;
+    }
+}
+
 .match-block-text p{
     color: rgba(0, 0, 0, .6);
 }
 .match-block-text{
-    display: flex;
-    flex-direction: column;
     margin: 0 0 0 14px;
 }
 

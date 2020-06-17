@@ -1,3 +1,23 @@
+function featureCheck(feature, where, type) {
+  return feature in where
+      && type ?
+          typeof where[feature] === type
+          : true
+}
+
+
+function enableScript() {
+  return featureCheck('classList', document.body)
+      && featureCheck('Array', Array.prototype, 'function')
+      && featureCheck('querySelectorAll', document.body, 'function')
+      && featureCheck('getElementById', document.body)
+      && featureCheck('forEach', document.body, 'function')
+}
+
+if (enableScript()) {
+  // the rest of all javascript functionalities here...
+  // if the browser doesn't support these features the user can use the application without javascript
+
 (function() {
   var socket = io();
 
@@ -247,3 +267,4 @@
   }
 
 })();
+}
